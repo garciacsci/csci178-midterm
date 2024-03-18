@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with g++",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                //"-D_MBCS", // Define _MBCS to enable multibyte character set
+                "-g",
+                "${workspaceFolder}/main.cpp", // compiles main.cpp
+                "${workspaceFolder}/src/*.cpp", // Compiles all .cpp files in the src directory
+                "-o", "${workspaceFolder}/main.exe", // Output executable
+
+                // Include directories
+                "-I", "${workspaceFolder}/../common/include",
+                "-I", "${workspaceFolder}/../common/include/GL",
+                "-I", "${workspaceFolder}/include",
+
+                // If your bin directory contains libraries, specify it with -L here
+                "-L", "${workspaceFolder}/../common/lib",
+
+                "-lSOIL", "-lglut32", "-lopengl32", "-lglu32", "-lwinmm", "-lgdi32", // Specify other libraries if necessary
+                "-static-libgcc", "-static-libstdc++", // These options statically link libgcc and libstdc++ to avoid dependency on GCC runtime DLLs
+                "-mwindows", // flag for windows GUI applications (not necessary)
+
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Compiler: g++"
+        }
+    ]
+}
