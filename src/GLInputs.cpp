@@ -112,6 +112,8 @@ void GLInputs::mouseMove(GLModel* mdl, double x, double y)
           prev_MouseY =y;                      // update previous mouse y
       }
 }
+
+
 void GLInputs::keyBackground(GLParallax* prlx, float speed)
 {
    //  if(clock() - myTime->startTime>15)
@@ -122,9 +124,10 @@ void GLInputs::keyBackground(GLParallax* prlx, float speed)
            prlx->yMax -=speed;
         break;
 
+        // Disabling parallax down since we won't go underground
         case VK_DOWN:           // move parallax down
-           prlx->yMin +=speed;
-           prlx->yMax +=speed;
+        //    prlx->yMin +=speed;
+        //    prlx->yMax +=speed;
         break;
 
         case VK_LEFT:            // move parallax left
@@ -133,7 +136,7 @@ void GLInputs::keyBackground(GLParallax* prlx, float speed)
            prlx->xMax -=speed;
         break;
 
-        case VK_RIGHT:         //// move parallax right
+        case VK_RIGHT:         // move parallax right
 
            prlx->xMin +=speed;
            prlx->xMax +=speed;
