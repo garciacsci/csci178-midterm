@@ -13,6 +13,9 @@
 
 using namespace std;
 
+#define PI 3.14159265
+#define GRAVITY 9.814
+
 typedef struct{   // shader positions in 3D
     float x;
     float y;

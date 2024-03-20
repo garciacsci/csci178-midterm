@@ -10,13 +10,17 @@
 #include<GLCheckCollision.h>
 
 // Create Objects
-GLInputs* keyMouseInput     = new GLInputs(); // Keyboard and mouse inputs object
-GLParallax* parallaxLayer1  = new GLParallax(); // Parallax background layer 1
-GLParallax* parallaxLayer2  = new GLParallax(); // Parallax background layer 2
-GLParallax* parallaxLayer3  = new GLParallax(); // Parallax background layer 3
-GLParallax* parallaxLayer4  = new GLParallax(); // Parallax background layer 4
-GLParallax* parallaxLayer5  = new GLParallax(); // Parallax background layer 5
+GLInputs* KeyMouseInput     = new GLInputs(); // Keyboard and mouse inputs object
+GLTimer*  Timer             = new GLTimer();  // Timer object
 
+
+GLParallax* ParallaxLayer1  = new GLParallax(); // Parallax background layer 1
+GLParallax* ParallaxLayer2  = new GLParallax(); // Parallax background layer 2
+GLParallax* ParallaxLayer3  = new GLParallax(); // Parallax background layer 3
+GLParallax* ParallaxLayer4  = new GLParallax(); // Parallax background layer 4
+GLParallax* ParallaxLayer5  = new GLParallax(); // Parallax background layer 5
+
+GLPlayer* Player            = new GLPlayer();   // Player object
 
 
 
@@ -54,11 +58,31 @@ GLint GLScene::initGL()
 
 
     // Load Textures //
-    parallaxLayer1->parallaxInit("images/parallax1.png");       // load background texture
-    parallaxLayer2->parallaxInit("images/parallax2.png");       // load foreground texture
-    parallaxLayer3->parallaxInit("images/parallax3.png");       // load foreground texture
-    parallaxLayer4->parallaxInit("images/parallax4.png");       // load foreground texture
-    parallaxLayer5->parallaxInit("images/parallax5.png");       // load foreground texture
+
+    // Parallax Textures
+    ParallaxLayer1->parallaxInit("images/parallax1.png");
+    ParallaxLayer2->parallaxInit("images/parallax2.png");
+    ParallaxLayer3->parallaxInit("images/parallax3.png");
+    ParallaxLayer4->parallaxInit("images/parallax4.png");
+    ParallaxLayer5->parallaxInit("images/parallax5.png");
+
+    // Player Textures
+    Player->initPlayer(6, 17, "images/warriorPlayer.png"); // columns, rows, spritesheet
+
+    // Enemy Textures
+
+
+    // Entity Initializations
+    Player->actionTrigger = Player->STAND; // set Player to stand on start
+
+    // Place Enemies //
+
+
+    Timer->startTime = clock();                    // start the timer
+
+
+
+
 
 
     return true;
@@ -72,20 +96,34 @@ GLint GLScene::drawScene()    // this function runs on a loop
    glColor3f(1.0,1.0,1.0);      //color the object red
 
 
-   // Parallax Background Drawing
-   glPushMatrix();                                              // save the current matrix on stack
-    glScaled(3.33, 3.33, 1.0);                                  // scale the drawing
-    glDisable(GL_LIGHTING);                                     // disable lighting for parallax
+    //-- Parallax Background Drawing --//
+    glPushMatrix();                                                 // save the current matrix on stack
+        glScaled(3.33, 3.33, 1.0);                                  // scale the drawing
+        glDisable(GL_LIGHTING);                                     // disable lighting for parallax
 
-    // Draw parallax background layers //
-    parallaxLayer1->parallaxDraw(screenWidth, screenHeight);
-    parallaxLayer2->parallaxDraw(screenWidth, screenHeight);
-    parallaxLayer3->parallaxDraw(screenWidth, screenHeight);
-    parallaxLayer4->parallaxDraw(screenWidth, screenHeight);
-    parallaxLayer5->parallaxDraw(screenWidth, screenHeight);
+        // Draw parallax background layers //
+        ParallaxLayer1->parallaxDraw(screenWidth, screenHeight);
+        ParallaxLayer2->parallaxDraw(screenWidth, screenHeight);
+        ParallaxLayer3->parallaxDraw(screenWidth, screenHeight);
+        ParallaxLayer4->parallaxDraw(screenWidth, screenHeight);
+        ParallaxLayer5->parallaxDraw(screenWidth, screenHeight);
 
-    glEnable(GL_LIGHTING);                                      // re-enable lighting for other objects
-   glPopMatrix();                                               // restore the matrix from stack
+        glEnable(GL_LIGHTING);                                      // re-enable lighting for other objects
+    glPopMatrix();                                                  // restore the matrix from stack
+
+    //-- Player Drawing --//
+    glPushMatrix();                                                 // save the current matrix on stack
+        glDisable(GL_LIGHTING);                                     // disable lighting for player
+        
+        Player->drawPlayer();                                       // draw player
+        Player->actions();                                          // ensures player actions are updated each frame
+
+        glEnable(GL_LIGHTING);                                      // re-enable lighting for other objects
+    glPopMatrix();                                                  // restore the matrix from stack
+
+
+
+
 
 
 
@@ -108,19 +146,26 @@ int GLScene::windMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch(uMsg)   // check for inputs
     {
     case WM_KEYDOWN:
-        keyMouseInput->wParam = wParam;                     // capture keystroke
+        KeyMouseInput->wParam = wParam;                         // capture keystroke
 
         // move parallax backgrounds on keystroke increasingly faster on each new layer
-        keyMouseInput->keyBackground(parallaxLayer1, 0.000);
-        keyMouseInput->keyBackground(parallaxLayer2, 0.001);
-        keyMouseInput->keyBackground(parallaxLayer3, 0.003);
-        keyMouseInput->keyBackground(parallaxLayer4, 0.005);
-        keyMouseInput->keyBackground(parallaxLayer5, 0.007);
+        KeyMouseInput->keyBackground(ParallaxLayer1, 0.000);
+        KeyMouseInput->keyBackground(ParallaxLayer2, 0.001);
+        KeyMouseInput->keyBackground(ParallaxLayer3, 0.003);
+        KeyMouseInput->keyBackground(ParallaxLayer4, 0.005);
+        KeyMouseInput->keyBackground(ParallaxLayer5, 0.007);
+
+        // Player Movement
+        KeyMouseInput->keyPress(Player);               // move player on key press
+
+
 
 
          break;
 
     case WM_KEYUP:
+        KeyMouseInput->wParam = wParam;                         // capture keystroke
+        KeyMouseInput->keyUP(Player);                           // stop player movement on key release
 
          break;
 

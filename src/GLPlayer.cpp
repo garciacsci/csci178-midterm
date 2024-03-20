@@ -1,4 +1,6 @@
 #include "GLPlayer.h"
+#include <common.h>
+
 
 GLPlayer::GLPlayer()
 {
@@ -8,16 +10,21 @@ GLPlayer::GLPlayer()
     vert[2].x = 0.5; vert[2].y =  0.5; vert[2].z =-1.0;
     vert[3].x =-0.5; vert[3].y =  0.5; vert[3].z =-1.0;
 
+
+    theta = 30*PI/180.0;
+    v =35;
+    t=0;
+
 }
 
 GLPlayer::~GLPlayer()
 {
     //dtor
 }
-void GLPlayer::initPlayer(int x, int y, char* fileName)
+void GLPlayer::initPlayer(int x, int y, char* fileName) // cols, rows, spritesheet file
 {
     plPosition.x =0.0;         // initialize positions
-    plPosition.y =-0.2;
+    plPosition.y =-0.35;
     plPosition.z = -1.0;
 
     plScale.x = 0.5;           // initialize scale
@@ -27,7 +34,7 @@ void GLPlayer::initPlayer(int x, int y, char* fileName)
     framesX = x;               // record number of frames
     framesY = y;
 
-    texture->loadTexture(fileName); //loading my background
+    texture->loadTexture(fileName); // load spritesheet
 
     xMin =0;
     yMax =2.0/(float)framesY;
@@ -66,64 +73,126 @@ void GLPlayer::drawPlayer()
 
 void GLPlayer::actions()
 {
+    switch(actionTrigger)
+    {
+        case STAND:
+
+            if(clock() -myTime->startTime > 90) { // change frame every x ms
+
+                // Set yMin and yMax to display the first row
+                yMin = 0;
+                yMax = 1.0 / (float)framesY;
+
+                if(xMax < 1) { // if not at the end of the row
+                
+                // advance to next frame in row
+                xMin += 1.0 / (float)framesX;
+                xMax += 1.0 / (float)framesX;
+
+                } else { // Reset to the first frame in the row
+                    xMin = 0;
+                    xMax = 1.0 / (float)framesX;
+                }
+
+                myTime->startTime = clock();
+
+            }
+            break;
 
 
-   switch(actionTrigger)
-   {
-   case STAND:
+        case WALKLEFT:
+            if(clock() - myTime->startTime>60) 
+            {
 
-       xMin =0;
-       xMax = 1.0/(float)framesX;
-       yMax =2.0/(float)framesY;
-       yMin =yMax-1.0/(float)framesY;
+                // Select second row
+                yMin = 1.0 / (float)framesY;
+                yMax = 2.0 / (float)framesY;
 
-       break;
+                if(xMax <1) // if not at end of row
+                { // advance to next frame in row
+                    xMax += 1.0/(float)framesX;
+                    xMin += 1.0/(float)framesX;
+                
+                } else { // Reset to the first frame in the row
+                    xMax = 0;
+                    xMin = 1.0/(float)framesX;
+                }
+                
+                myTime->startTime =clock();
+            }
 
-   case WALKLEFT:
-
-       xMax =0;
-       xMin = 1.0/(float)framesX;
-
-       yMax =1.0/(float)framesY;
-       yMin =yMax-1.0/(float)framesY;
-
-       xMax += 1.0/(float)framesX;
-       xMin += 1.0/(float)framesX;
-       break;
-
-   case WALKRIGHT:
-    if(clock() - myTime->startTime>60)
-   {
-       if(xMax <1) {
-       xMin += 1.0/(float)framesX;
-       xMax += 1.0/(float)framesX;
-       }
-       else
-       {
-        xMin = 0;
-        xMax = 1.0/(float)framesX;
-
-         if(yMax <1)
-         {
-             yMax +=1.0/(float)framesY;
-             yMin +=1.0/(float)framesY;
-         }
-         else
-         {
-             yMin =0.0/(float)framesY;
-             yMax =1.0/(float)framesY;
-         }
-
-       }
-     myTime->startTime =clock();
-   }
-
-       break;
+            break;
 
 
-   case RUN: break;
-   case JUMP: break;
-   case ATTACK: break;
-   default: break;
-   }
+        case WALKRIGHT:
+            if(clock() - myTime->startTime>60)
+            {
+                // Select second row
+                yMin = 1.0 / (float)framesY;
+                yMax = 2.0 / (float)framesY;
+
+                if(xMax <1) 
+                {
+                    xMin += 1.0/(float)framesX;
+                    xMax += 1.0/(float)framesX;
+                }
+                else
+                {
+                    xMin = 0;
+                    xMax = 1.0/(float)framesX;
+
+                }
+
+                myTime->startTime =clock();
+            }
+
+            break;
+
+        case JUMP: 
+
+            if(clock() -myTime->startTime > 120) { // change frame every x ms
+
+                // Set yMin and yMax to display the first row
+                yMin = 7.0 / (float)framesY;
+                yMax = 8.0 / (float)framesY;
+
+                if(xMax < 1) { // if not at the end of the row
+                
+                    // advance to next frame in row
+                    xMin += 1.0 / (float)framesX;
+                    xMax += 1.0 / (float)framesX;
+
+                    // Move the player up and down
+                    // plPosition.x -= (v*t*cos(theta))/1500;
+                    if(xMin< (4.0 / (float)framesX))
+                        plPosition.y += .1;
+                    else
+                        plPosition.y -= .1;                
+
+                } else { // Reset to stand
+                    plPosition.y = -0.35;
+                    actionTrigger = STAND;
+                    break;
+                }
+
+                myTime->startTime = clock();
+
+            }
+
+            break;
+
+
+
+
+
+        case ATTACK: 
+
+            break;
+
+        default: 
+
+            break;
+
+    }
+
 }
