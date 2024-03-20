@@ -29,6 +29,10 @@ class GLPlayer
 
         int actionTrigger;  // for load actions
 
+        int v;   // velocity
+        float t; // projectile timer
+        float theta;// angle of projectile
+
     protected:
 
     private:

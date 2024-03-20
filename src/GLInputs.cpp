@@ -16,44 +16,44 @@ GLInputs::~GLInputs()
 {
     //dtor
 }
-void GLInputs::keyPress(GLModel* Model, GLPlayer* pl)
+void GLInputs::keyPress(GLPlayer* pl)
 {
     switch(wParam)
     {
     case VK_LEFT:
         pl->actionTrigger= pl->WALKLEFT;
-        Model->RotateY +=1.0;
         break;
 
     case VK_RIGHT:
         pl->actionTrigger = pl->WALKRIGHT;
-        Model->RotateY -=1.0;
         break;
 
     case VK_DOWN:
-        Model->RotateX +=1.0;
         break;
 
     case VK_UP:
-        Model->RotateX -=1.0;
+        pl->actionTrigger = pl->JUMP;
         break;
 
     case VK_ADD:
-        Model->zPos +=1.0;
+
         break;
 
     case VK_SUBTRACT:
-        Model->zPos -=1.0;
         break;
     }
 }
 
-void GLInputs::keyUP(GLPlayer* pl)
+void GLInputs::keyUP(GLPlayer* pl) // no longer interrupts jump action
 {
     switch (wParam)
     {
         default:
-           pl->actionTrigger= pl->STAND;
+           if(pl->actionTrigger == pl->JUMP) { // if not jumping
+                pl->actionTrigger = pl->JUMP;
+           } else {
+                pl->actionTrigger= pl->STAND;
+           }
         break;
     }
 }
@@ -114,14 +114,14 @@ void GLInputs::mouseMove(GLModel* mdl, double x, double y)
 }
 
 
-void GLInputs::keyBackground(GLParallax* prlx, float speed)
+void GLInputs::keyBackground(GLParallax* prlx, float speed) // parallax only goes left and right
 {
    //  if(clock() - myTime->startTime>15)
        switch(wParam)
         {
        case VK_UP:               // move parallax up
-           prlx->yMin -=speed;
-           prlx->yMax -=speed;
+        //    prlx->yMin -=speed;
+        //    prlx->yMax -=speed;
         break;
 
         // Disabling parallax down since we won't go underground
