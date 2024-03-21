@@ -12,8 +12,10 @@ GLPlayer::GLPlayer()
 
 
     theta = 30*PI/180.0;
-    v =35;
+    v =100.0;
     t=0;
+
+    int facing = RIGHT; // facing right by default
 
 }
 
@@ -152,46 +154,84 @@ void GLPlayer::actions()
 
             if(clock() -myTime->startTime > 120) { // change frame every x ms
 
-                // Set yMin and yMax to display the first row
-                yMin = 7.0 / (float)framesY;
-                yMax = 8.0 / (float)framesY;
-
                 if(xMax < 1) { // if not at the end of the row
                 
                     // advance to next frame in row
                     xMin += 1.0 / (float)framesX;
                     xMax += 1.0 / (float)framesX;
 
-                    // Move the player up and down
-                    // plPosition.x -= (v*t*cos(theta))/1500;
-                    if(xMin< (4.0 / (float)framesX))
-                        plPosition.y += .1;
-                    else
-                        plPosition.y -= .1;                
 
-                } else { // Reset to stand
-                    plPosition.y = -0.35;
+                    // Move the player up and down
+                        plPosition.y += 0.15;
+
+                    if(facing == RIGHT) // if facing right
+                        plPosition.x += 0.15; // move right
+
+                    if(facing == LEFT) // if facing left
+                        plPosition.x -= 0.15; // move left
+
+
+
+
+
+                    
+
+                } else { // advance next row
+
+                        actionTrigger = FALL;
+                        xMin = 0;
+                        xMax = 1.0 / (float)framesX;
+                        yMin += 1.0 / (float)framesY;
+                        yMax += 1.0 / (float)framesY;
+
+                        break;
+
+                    }
+
+                    myTime->startTime = clock();
+
+
+            }      
+
+            break;
+
+        case FALL:
+            if(clock() -myTime->startTime > 120) { // change frame every x ms
+
+                if(xMax < 4 / (float)framesX) { // if not at the end of the row
+                
+                    // advance to next frame in row
+                    xMin += 1.0 / (float)framesX;
+                    xMax += 1.0 / (float)framesX;
+
+
+                    // Move the player down
+                    plPosition.y -= 0.15;
+
+                    if(facing == RIGHT) { // if facing right
+                        plPosition.x += 0.15; // move right
+                    }
+
+                    if(facing == LEFT) { // if facing left
+                        plPosition.x -= 0.15; // move left
+                    }
+
+                } else {
+
                     actionTrigger = STAND;
+                    plPosition.y = -0.35;
+                        
                     break;
+
+                } 
+
+                    myTime->startTime = clock();
+
                 }
 
-                myTime->startTime = clock();
-
-            }
-
+                
             break;
 
-
-
-
-
-        case ATTACK: 
-
-            break;
-
-        default: 
-
-            break;
 
     }
 
