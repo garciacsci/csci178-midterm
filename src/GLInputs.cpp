@@ -22,16 +22,27 @@ void GLInputs::keyPress(GLPlayer* pl)
     {
     case VK_LEFT:
         pl->actionTrigger= pl->WALKLEFT;
+        pl->facing = pl->LEFT;
         break;
 
     case VK_RIGHT:
         pl->actionTrigger = pl->WALKRIGHT;
+        pl->facing = pl->RIGHT;
         break;
 
     case VK_DOWN:
+        pl->facing = pl->DOWN;
+        pl->plPosition.x = 0.0;
         break;
 
     case VK_UP:
+        // Select start row for animation
+        pl->yMin = 6.0 / (float)pl->framesY;
+        pl->yMax = 7.0 / (float)pl->framesY;
+        pl->xMin = 2.0 / (float)pl->framesX;
+        pl->xMax = 3.0 / (float)pl->framesX;
+
+
         pl->actionTrigger = pl->JUMP;
         break;
 

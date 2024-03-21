@@ -11,7 +11,11 @@ class GLPlayer
         GLPlayer();
         virtual ~GLPlayer();
 
-        enum {STAND, WALKLEFT,WALKRIGHT, RUN, JUMP, ATTACK};
+        enum {STAND, WALKLEFT,WALKRIGHT, RUN, JUMP, FALL, ATTACK};
+        enum {LEFT, RIGHT, DOWN, UP};
+
+        int facing;
+
 
         GLTexture *texture = new GLTexture();
         GLTimer   *myTime = new GLTimer();
@@ -32,6 +36,7 @@ class GLPlayer
         int v;   // velocity
         float t; // projectile timer
         float theta;// angle of projectile
+
 
     protected:
 

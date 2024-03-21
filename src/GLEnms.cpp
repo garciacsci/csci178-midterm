@@ -42,6 +42,7 @@ void GLEnms::drawEnemy()
     glRotatef(eRotate.y,0,1,0);
     glRotatef(eRotate.z,0,0,1);
 
+    
     glScalef(eScale.x,eScale.y,1.0);
 
      glBegin(GL_QUADS);
