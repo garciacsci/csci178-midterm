@@ -21,7 +21,6 @@ Include a text (READMe.txt) file outlining your task and approach.
             * I did this by adding a condition to the KEYUP case in the keystroke handler
               that checks to make sure the player isn't jumping before switching to the
               default STAND animation
-
         - I refined my approach by breaking the animation down into JUMP and FALL
           * This made rendering the animation simpler and cleaner since I could now
             also delegate the vertical player translations to each animation
@@ -29,6 +28,16 @@ Include a text (READMe.txt) file outlining your task and approach.
           and fall animations since being locked in facing right was bothering me
     * I also made it so that the player keeps facing the direction they were last facing
       instead of defaulting to right all the time in the STAND animation
+    * The very last thing I did was add a check in GLDrawScene that doesn't let the player's x
+      position go outside of the scene's bounds (on my laptop screen)
+        - You can disable this by commenting out this block
+          ``` 
+          if(Player->plPosition.x > 1.3)
+            Player->plPosition.x = 1.3;
+          if(Player->plPosition.x < -1.3)
+            Player->plPosition.x = -1.3;
+          ```
+          in GLScene.cpp under the //-- Player Drawing --// comment
 
   - I finally moved onto Enemies (which I'm using as the "random objects" that move towards the player)
     * I first got it so that they were appropriately placed and scaled in the scene
