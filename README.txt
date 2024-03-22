@@ -63,6 +63,9 @@ Include a text (READMe.txt) file outlining your task and approach.
       running left or right
       - I fixed this by making the conditional render check if the death animation was taking place instead
         of the alive bool
+    * Very last thing I did was add randomized scaling to the slimes and improved hit detection
+      since the sizes of the slimes were now variable
+
 
 
         
@@ -89,7 +92,7 @@ Your creativity will be awarded extra 5 points.
 
 3) Have random objects move towards the player [x]
   - I used the Enemy class for this and made it so that they move towards the player
-    * The randomness is their horizontal spread on spawn, and their color
+    * The randomness is their horizontal spread on spawn, scale, and their color
       - The initial "order" of the enemies colors should therefore differ between runs
     * I also made it so that they "respawn" after dying on collision with the player
     * They all come in from the right of the scene moving left, but will turn around

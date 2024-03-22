@@ -106,7 +106,8 @@ GLint GLScene::initGL()
 
       Slimes[i].action = Slimes[i].WALKLEFT;
 
-      //Slimes[i].eScale.x = Slimes[i].eScale.y = (float)(rand() % 3) / 10.0;
+      Slimes[i].eScale.x = Slimes[i].eScale.y 
+          = 0.07f + (float)rand() / (float)RAND_MAX * (0.25f - 0.07f);
     }
 
     Timer->startTime = clock();                    // start the timer
@@ -169,7 +170,11 @@ GLint GLScene::drawScene()    // this function runs on a loop
             Slimes[i].action = Slimes[i].WALKRIGHT 
           : Slimes[i].action = Slimes[i].WALKLEFT;
 
-        if (hit->isRadialCollision(Slimes[i].pos, Player->plPosition, 0.07, 0.07, 0.02))
+        // -- Enemy Hit --//
+        float playerRadius = 0.3 * max(Player->plScale.x, Player->plScale.y);
+        float slimeRadius = 0.3 * max(Slimes[i].eScale.x, Slimes[i].eScale.y);
+
+        if (hit->isRadialCollision(Slimes[i].pos, Player->plPosition, slimeRadius, playerRadius, 0.02))
         {
           if (i == 0)
           {
@@ -186,10 +191,14 @@ GLint GLScene::drawScene()    // this function runs on a loop
 
           Slimes[i].action = Slimes[i].DIE;
         }
-        if(!Slimes[i].alive) {
+
+        if(!Slimes[i].alive) { // respawn outside of right frame and update alive bool to true
           Slimes[i].pos.x = (float)rand() / (float)RAND_MAX * 1 - 0.5 + 2;
+          Slimes[i].eScale.x = Slimes[i].eScale.y 
+            = 0.07f + (float)rand() / (float)RAND_MAX * (0.25f - 0.07f);
           Slimes[i].alive = true;
         }
+
         Slimes[i].drawEnemy();
         Slimes[i].actions();
 
