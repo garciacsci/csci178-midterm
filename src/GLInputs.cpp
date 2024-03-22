@@ -33,6 +33,7 @@ void GLInputs::keyPress(GLPlayer* pl)
     case VK_DOWN:
         pl->facing = pl->DOWN;
         pl->plPosition.x = 0.0;
+        pl->plPosition.y = -0.35;
         break;
 
     case VK_UP:
@@ -42,6 +43,8 @@ void GLInputs::keyPress(GLPlayer* pl)
         pl->xMin = 2.0 / (float)pl->framesX;
         pl->xMax = 3.0 / (float)pl->framesX;
 
+        // pl->facing == pl->LEFT ? (pl->xMax = 2.0 / (float)pl->framesX, pl->xMin = 3.0 / (float)pl->framesX)
+        //                        : (pl->xMin = 2.0 / (float)pl->framesX, pl->xMax = 3.0 / (float)pl->framesX);
 
         pl->actionTrigger = pl->JUMP;
         break;
@@ -154,4 +157,20 @@ void GLInputs::keyBackground(GLParallax* prlx, float speed) // parallax only goe
        break;
     //    myTime->startTime =clock();
     }
+}
+
+void GLInputs::keyEnemy(GLEnms* enm) {
+  switch(wParam) {
+    case VK_LEFT: // move enemy right
+      if(enm->action != enm->DIE)
+        enm->pos.x += enm->speed;
+      break;
+
+    case VK_RIGHT: // move enemy left
+      if (enm->action != enm->DIE)
+        enm->pos.x -= enm->speed;
+      break;
+  }
+
+
 }
