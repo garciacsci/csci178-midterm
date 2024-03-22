@@ -11,7 +11,7 @@ class GLPlayer
         GLPlayer();
         virtual ~GLPlayer();
 
-        enum {STAND, WALKLEFT,WALKRIGHT, RUN, JUMP, FALL, ATTACK};
+        enum {STAND, WALKLEFT, WALKRIGHT, RUN, JUMPRIGHT, JUMPLEFT, FALLRIGHT, FALLLEFT, ATTACK};
         enum {LEFT, RIGHT, DOWN, UP};
 
         int facing;

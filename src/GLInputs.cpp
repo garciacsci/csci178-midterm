@@ -40,13 +40,11 @@ void GLInputs::keyPress(GLPlayer* pl)
         // Select start row for animation
         pl->yMin = 6.0 / (float)pl->framesY;
         pl->yMax = 7.0 / (float)pl->framesY;
-        pl->xMin = 2.0 / (float)pl->framesX;
-        pl->xMax = 3.0 / (float)pl->framesX;
+        // pl->xMin = 2.0 / (float)pl->framesX;
+        // pl->xMax = 3.0 / (float)pl->framesX;
 
-        // pl->facing == pl->LEFT ? (pl->xMax = 2.0 / (float)pl->framesX, pl->xMin = 3.0 / (float)pl->framesX)
-        //                        : (pl->xMin = 2.0 / (float)pl->framesX, pl->xMax = 3.0 / (float)pl->framesX);
-
-        pl->actionTrigger = pl->JUMP;
+        pl->facing == pl->LEFT ? (pl->xMax = 2.0 / (float)pl->framesX, pl->xMin = 3.0 / (float)pl->framesX, pl->actionTrigger = pl->JUMPLEFT)
+                              : (pl->xMin = 2.0 / (float)pl->framesX, pl->xMax = 3.0 / (float)pl->framesX, pl->actionTrigger = pl->JUMPRIGHT);
         break;
 
     case VK_ADD:
@@ -63,11 +61,11 @@ void GLInputs::keyUP(GLPlayer* pl) // no longer interrupts jump action
     switch (wParam)
     {
         default:
-           if(pl->actionTrigger == pl->JUMP) { // if not jumping
-                pl->actionTrigger = pl->JUMP;
-           } else {
-                pl->actionTrigger= pl->STAND;
-           }
+          if(pl->actionTrigger == pl->JUMPRIGHT || pl->actionTrigger == pl->JUMPLEFT) { // if not jumpingbreak
+            break;
+          } else {
+            pl->actionTrigger= pl->STAND;
+          }
         break;
     }
 }

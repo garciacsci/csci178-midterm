@@ -150,9 +150,9 @@ void GLPlayer::actions()
 
             break;
 
-        case JUMP: 
+        case JUMPRIGHT: 
 
-            if(clock() -myTime->startTime > 120) { // change frame every x ms
+            if(clock() - myTime->startTime > 120) { // change frame every x ms
 
                 if(xMax < 1) { // if not at the end of the row
                 
@@ -161,24 +161,15 @@ void GLPlayer::actions()
                     xMax += 1.0 / (float)framesX;
 
 
-                    // Move the player up and down
+                    // Move the player up
                         plPosition.y += 0.15;
-
-                    if(facing == RIGHT) // if facing right
                         plPosition.x += 0.15; // move right
 
-                    if(facing == LEFT) // if facing left
-                        plPosition.x -= 0.15; // move left
 
-
-
-
-
-                    
 
                 } else { // advance next row
 
-                        actionTrigger = FALL;
+                        actionTrigger = FALLRIGHT;
                         xMin = 0;
                         xMax = 1.0 / (float)framesX;
                         yMin += 1.0 / (float)framesY;
@@ -195,8 +186,8 @@ void GLPlayer::actions()
 
             break;
 
-        case FALL:
-            if(clock() -myTime->startTime > 120) { // change frame every x ms
+        case FALLRIGHT:
+            if(clock() - myTime->startTime > 120) { // change frame every x ms
 
                 if(xMax < 4 / (float)framesX) { // if not at the end of the row
                 
@@ -207,14 +198,7 @@ void GLPlayer::actions()
 
                     // Move the player down
                     plPosition.y -= 0.15;
-
-                    if(facing == RIGHT) { // if facing right
-                        plPosition.x += 0.15; // move right
-                    }
-
-                    if(facing == LEFT) { // if facing left
-                        plPosition.x -= 0.15; // move left
-                    }
+                      plPosition.x += 0.15; // move right
 
                 } else {
 
@@ -231,6 +215,77 @@ void GLPlayer::actions()
 
                 
             break;
+
+        
+        case JUMPLEFT: 
+
+            if(clock() - myTime->startTime > 120) { // change frame every x ms
+
+                if(xMin < 1) { // if not at the end of the row
+                
+                    // advance to next frame in row
+                    xMin += 1.0 / (float)framesX;
+                    xMax += 1.0 / (float)framesX;
+
+
+                    // Move the player up
+                        plPosition.y += 0.15;
+                        plPosition.x -= 0.15; // move left
+
+
+
+                } else { // advance next row
+
+                        actionTrigger = FALLLEFT;
+                        xMax = 0;
+                        xMin = 1.0 / (float)framesX;
+                        yMin += 1.0 / (float)framesY;
+                        yMax += 1.0 / (float)framesY;
+
+                        break;
+
+                    }
+
+                    myTime->startTime = clock();
+
+
+            }      
+
+            break;
+
+        case FALLLEFT:
+            if(clock() - myTime->startTime > 120) { // change frame every x ms
+
+                if(xMin < 4 / (float)framesX) { // if not at the end of the row
+                
+                    // advance to next frame in row
+                    xMin += 1.0 / (float)framesX;
+                    xMax += 1.0 / (float)framesX;
+
+
+                    // Move the player down
+                    plPosition.y -= 0.15;
+                    plPosition.x -= 0.15; // move left
+                    
+                
+
+                } else {
+
+                    actionTrigger = STAND;
+                    plPosition.y = -0.35;
+                        
+                    break;
+
+                } 
+
+                    myTime->startTime = clock();
+
+                }
+
+                
+            break;
+
+        
 
 
     }
