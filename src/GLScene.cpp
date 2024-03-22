@@ -144,6 +144,10 @@ GLint GLScene::drawScene()    // this function runs on a loop
         
         Player->drawPlayer();                                       // draw player
         Player->actions();                                          // ensures player actions are updated each frame
+        if(Player->plPosition.x > 1.3)
+          Player->plPosition.x = 1.3;
+        if(Player->plPosition.x < -1.3)
+          Player->plPosition.x = -1.3;
 
         glEnable(GL_LIGHTING);                                      // re-enable lighting for other objects
     glPopMatrix();                                                  // restore the matrix from stack
