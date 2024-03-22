@@ -1,13 +1,13 @@
 #include <GLScene.h>
-#include<GLLight.h>
-#include<GLTexture.h>
-#include<GLModel.h>
-#include<GLInputs.h>
-#include<GLParallax.h>
-#include<GLPlayer.h>
-#include<GLEnms.h>
-#include<GLTimer.h>
-#include<GLCheckCollision.h>
+#include <GLLight.h>
+#include <GLTexture.h>
+#include <GLModel.h>
+#include <GLInputs.h>
+#include <GLParallax.h>
+#include <GLPlayer.h>
+#include <GLEnms.h>
+#include <GLTimer.h>
+#include <GLCheckCollision.h>
 
 // Create Objects
 GLInputs* KeyMouseInput     = new GLInputs(); // Keyboard and mouse inputs object
@@ -20,8 +20,23 @@ GLParallax* ParallaxLayer3  = new GLParallax(); // Parallax background layer 3
 GLParallax* ParallaxLayer4  = new GLParallax(); // Parallax background layer 4
 GLParallax* ParallaxLayer5  = new GLParallax(); // Parallax background layer 5
 
-GLPlayer* Player            = new GLPlayer();   // Player object
 
+GLPlayer*   Player          = new GLPlayer();       // Player object
+
+
+GLEnms     Slimes[3];
+GLTexture*  GreenSlimeTexture  = new GLTexture();
+GLTexture*  GreenSlimeDeath    = new GLTexture();
+
+GLTexture*  BlueSlimeTexture   = new GLTexture();
+GLTexture*  BlueSlimeDeath     = new GLTexture();
+
+GLTexture*  RedSlimeTexture    = new GLTexture();
+GLTexture*  RedSlimeDeath      = new GLTexture();
+
+
+
+GLCheckCollision* hit       = new GLCheckCollision(); // Hit object
 
 
 
@@ -70,19 +85,31 @@ GLint GLScene::initGL()
     Player->initPlayer(6, 17, "images/warriorPlayer.png"); // columns, rows, spritesheet
 
     // Enemy Textures
+    GreenSlimeTexture->loadTexture("images/green-slime-idle.png");
+    GreenSlimeDeath->loadTexture("images/green-slime-death.png");
+
+    BlueSlimeTexture->loadTexture("images/blue-slime-idle.png");
+    BlueSlimeDeath->loadTexture("images/blue-slime-death.png");
+
+    RedSlimeTexture->loadTexture("images/red-slime-idle.png");
+    RedSlimeDeath->loadTexture("images/red-slime-death.png");
+
 
 
     // Entity Initializations
     Player->actionTrigger = Player->STAND; // set Player to stand on start
 
     // Place Enemies //
+    for (int i = 0; i < 3; i++)
+    {
+      Slimes[i].pos.x = (float)rand() / (float)RAND_MAX * 2 - 0.5;
 
+      Slimes[i].action = Slimes[i].WALKLEFT;
+
+      //Slimes[i].eScale.x = Slimes[i].eScale.y = (float)(rand() % 3) / 10.0;
+    }
 
     Timer->startTime = clock();                    // start the timer
-
-
-
-
 
 
     return true;
@@ -121,13 +148,54 @@ GLint GLScene::drawScene()    // this function runs on a loop
         glEnable(GL_LIGHTING);                                      // re-enable lighting for other objects
     glPopMatrix();                                                  // restore the matrix from stack
 
+    //-- Enemy Drawing --//
+    glPushMatrix();
+      glDisable(GL_LIGHTING);
 
+      for (int i = 0; i < 3; i++) {
+        if ( i == 0 ) {
+          GreenSlimeTexture->bindTexture();
+        } else if ( i == 1) {
+          BlueSlimeTexture->bindTexture();
+        } else {
+          RedSlimeTexture->bindTexture();
+        }
 
+        Slimes[i].pos.x < Player->plPosition.x ? 
+            Slimes[i].action = Slimes[i].WALKRIGHT 
+          : Slimes[i].action = Slimes[i].WALKLEFT;
 
+        if (hit->isRadialCollision(Slimes[i].pos, Player->plPosition, 0.07, 0.07, 0.02))
+        {
+          if (i == 0)
+          {
+            GreenSlimeDeath->bindTexture();
+          }
+          else if (i == 1)
+          {
+            BlueSlimeDeath->bindTexture();
+          }
+          else
+          {
+            RedSlimeDeath->bindTexture();
+          }
 
+          Slimes[i].action = Slimes[i].DIE;
+        }
+        if(!Slimes[i].alive) {
+          Slimes[i].pos.x = (float)rand() / (float)RAND_MAX * 1 - 0.5 + 2;
+          Slimes[i].alive = true;
+        }
+        Slimes[i].drawEnemy();
+        Slimes[i].actions();
 
+      }
+
+      glEnable(GL_LIGHTING);
+    glPopMatrix();
 
     return true;
+
 }
 
 GLvoid GLScene::resizeScene(GLsizei width, GLsizei height)
@@ -159,23 +227,26 @@ int GLScene::windMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         KeyMouseInput->keyPress(Player);               // move player on key press
 
 
+        for(int i = 0; i< 3; i++) {
+          KeyMouseInput->keyEnemy(&Slimes[i]);
+        }
 
 
-         break;
+        break;
 
     case WM_KEYUP:
         KeyMouseInput->wParam = wParam;                         // capture keystroke
         KeyMouseInput->keyUP(Player);                           // stop player movement on key release
 
-         break;
+        break;
 
     case WM_LBUTTONDOWN:
 
-         break;
+        break;
 
     case WM_RBUTTONDOWN:
 
-         break;
+        break;
 
     case WM_LBUTTONUP:
     case WM_RBUTTONUP:
@@ -185,11 +256,11 @@ int GLScene::windMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEMOVE:
 
-         break;
+        break;
     case WM_MOUSEWHEEL:
 
 
-       break;
+      break;
     }
 }
 

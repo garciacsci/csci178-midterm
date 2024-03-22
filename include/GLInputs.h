@@ -4,6 +4,7 @@
 #include<GLModel.h>
 #include<GLParallax.h>
 #include<GLPlayer.h>
+#include<GLEnms.h>
 #include<common.h>
 
 class GLInputs
@@ -15,6 +16,7 @@ class GLInputs
         void keyPress(GLPlayer*);  // when key pressed
         void keyUP(GLPlayer*);               // when key released
         void keyBackground(GLParallax *, float);//parallax model & speed
+        void keyEnemy(GLEnms *);
 
 
         void mouseEventDown(GLModel*, double, double); // mouse btn pressed
