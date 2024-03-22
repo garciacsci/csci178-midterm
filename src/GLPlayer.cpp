@@ -25,7 +25,7 @@ GLPlayer::~GLPlayer()
 }
 void GLPlayer::initPlayer(int x, int y, char* fileName) // cols, rows, spritesheet file
 {
-    plPosition.x =0.0;         // initialize positions
+    plPosition.x =-1.0;         // initialize positions
     plPosition.y =-0.35;
     plPosition.z = -1.0;
 
@@ -92,8 +92,8 @@ void GLPlayer::actions()
                 xMax += 1.0 / (float)framesX;
 
                 } else { // Reset to the first frame in the row
-                    xMin = 0;
-                    xMax = 1.0 / (float)framesX;
+                  facing == LEFT ? (xMax = 0, xMin = 1.0 / (float)framesX)
+                                  : (xMin = 0, xMax = 1.0 / (float)framesX);
                 }
 
                 myTime->startTime = clock();

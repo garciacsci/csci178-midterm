@@ -11,6 +11,9 @@ class GLEnms
         GLEnms();
         virtual ~GLEnms();
 
+        enum {STAND, WALKLEFT, WALKRIGHT, DIE};
+        bool alive;
+
         void drawEnemy();
         void PlaceEnemy(vec3);
         void actions();

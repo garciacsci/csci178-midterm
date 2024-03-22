@@ -11,7 +11,7 @@ class GLCheckCollision
 
 
           bool isLinearCollision(vec2, vec2); // check x,x1 or y.y1 components
-          bool isRadialCollision(vec2,vec2,float,float,float); // element1 , element2 radius1, radius2
+          bool isRadialCollision(vec3,vec3,float,float,float); // element1 , element2 radius1, radius2
           bool isHitPlane(vec2,vec2);// check object vs floor/wall
 
           bool isCubicCollision(vec3, vec3); // check x,y.z components of two models

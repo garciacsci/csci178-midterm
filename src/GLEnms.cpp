@@ -5,26 +5,29 @@ GLEnms::GLEnms()
     //ctor
 
     pos.x =0;    // Default position settings
-    pos.y =0;
-    pos.z =-2;
+    pos.y =-0.5;
+    pos.z =-2.0;
 
-    eScale.x =1.0; // default scaling
-    eScale.y =1.0;
+    eScale.x =0.12; // default scaling
+    eScale.y =0.12;
 
     eRotate.x =0;  // default rotations
     eRotate.y =0;
     eRotate.z =0;
 
     framesX =7;   // number of columns in the sprite sheet
-    framesY =2;   // number of rows in the spritesheet
+    framesY =1;   // number of rows in the spritesheet
 
     xMax =1.0/framesX;  // default image
     xMin=0;
     yMax=1.0/framesY;
-    yMin=0;
+    yMin=0.01;
 
-    speed =0.01;  // moving speed
-    action=1;     // set actions
+    speed =0.03;  // moving speed
+    action=STAND;     // set actions
+
+    alive = true; // initialize as alive
+
     myTime->startTime = clock();
 }
 
@@ -72,42 +75,63 @@ void GLEnms::PlaceEnemy(vec3 p)
 
 void GLEnms::actions()
 {
-    switch(action)
-    {
-    case 0:
-        if(clock() - myTime->startTime>60){
-        xMin +=1.0/framesX;
-        xMax +=1.0/framesX;
+    switch(action) {
+    case WALKRIGHT:
+      if (clock() - myTime->startTime > 90)
+      {
+        xMin += 1.0 / framesX;
+        xMax += 1.0 / framesX;
 
-        yMin= 0.5;
-        yMax=1.0;
+        pos.x += speed;
+        myTime->startTime = clock();
+      }
+      break;
 
-         pos.x +=speed;
+    case WALKLEFT:
+      if (clock() - myTime->startTime > 90)
+      {
+        xMin += 1.0 / framesX;
+        xMax += 1.0 / framesX;
 
-        myTime->startTime =clock();
+        pos.x -= speed;
+
+        myTime->startTime = clock();
+      }
+      break;
+
+    case STAND:
+
+      //if(clock() - myTime->startTime > 90) {
+
+      xMax = 1.0 / framesX; // default image
+      xMin = 0;
+      yMax = 1.0 / framesY;
+      yMin = 0;
+
+      // myTime->startTime = clock();
+
+      //}
+
+      break;
+  
+    case DIE:
+
+      if (clock() - myTime->startTime > 240) {
+
+        if (xMin < 1.0) {
+          xMin += 1.0 / framesX;
+          xMax += 1.0 / framesX;
+        } else {
+          alive = false;
+          break;
         }
-        break;
 
-    case 1:
-        if(clock() - myTime->startTime>60){
-        xMin +=1.0/framesX;
-        xMax +=1.0/framesX;
+        myTime->startTime = clock();
 
-        yMin= 0.0;
-        yMax=0.5;
+      }
 
-        pos.x +=speed;
-         myTime->startTime =clock();
-        }
-        break;
-
-    case 3:
-
-    xMax =1.0/framesX;  // default image
-    xMin=0;
-    yMax=1.0/framesY;
-    yMin=0;
-        break;
-    }
+      break;
+  
+  }
 
 }
